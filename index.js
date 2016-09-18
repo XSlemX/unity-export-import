@@ -71,9 +71,10 @@ function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
             var origin = path.join(projectRoot, assetPath);
+            console.log(dest);
             var destination = path.join(dest, assetPath);
-            console.log('Copying files from ' + origin + ' to ' + dest);
-            return copyFiles(origin, dest).then(() => {
+            console.log('Copying files from ' + origin + ' to ' + destination);
+            return copyFiles(origin, destination).then(() => {
                 return deleteFiles(origin);
             });
         }));
