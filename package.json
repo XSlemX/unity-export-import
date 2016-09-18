@@ -1,16 +1,16 @@
 {
   "name": "unity-export-import",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Package for exporting/importing unitypackage and setting them up in different folder",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/XSlemX/unity-export-import.git"
   },
-  "files": ["index.js"
+  "files": [
+    "index.js"
   ],
-  "scripts": {
-  },
+  "scripts": {},
   "author": "espensaeverud@gmail.com",
   "license": "MIT",
   "devDependencies": {
