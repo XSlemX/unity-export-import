@@ -73,9 +73,11 @@ function moveFiles(assetPaths, dest) {
             var origin = path.join(projectRoot, assetPath);
             console.log(dest);
             var destination = path.join(dest, assetPath);
-            console.log('Copying files from ' + origin + ' to ' + destination);
-            return copyFiles(origin, destination).then(() => {
-                return deleteFiles(origin);
+            createDirectory(destination).then(() => {
+                console.log('Copying files from ' + origin + ' to ' + destination);
+                return copyFiles(origin, destination).then(() => {
+                    return deleteFiles(origin);
+                });
             });
         }));
 }
