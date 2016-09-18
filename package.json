@@ -1,0 +1,27 @@
+{
+  "name": "unity-export-import",
+  "version": "0.0.1",
+  "description": "Package for exporting/importing unitypackage and setting them up in different folder",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XSlemX/unity-export-import.git"
+  },
+  "files": ["index.js"
+  ],
+  "scripts": {
+  },
+  "author": "espensaeverud@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp-release-it": "^1.1.2"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.5.2",
+    "mkdirp": "^0.5.1",
+    "ncp": "^2.0.0",
+    "path-exists": "^3.0.0",
+    "rimraf": "^2.5.4"
+  }
+}
