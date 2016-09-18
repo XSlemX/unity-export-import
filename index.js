@@ -123,14 +123,14 @@ function exportPackage(packageName, assetFileList) {
                 {
                     templateData: {
                         f: function (s) {
-                            let command = "";
+                            let paths = "";
                             assetFileList.filter((file) => {
                                 return file.indexOf('.js') == -1 && file.indexOf('.unitypackage') == -1;
                             }).map((file) => {
-                                return command += "\"" + file + "\" ";
+                                return paths += "\"" + file + "\" ";
                             });
 
-                            return unityPath + COMMAND_EXPORT + command + " " + packageName + ".unitypackage";
+                            return unityPath + COMMAND_EXPORT + space + UNITY_PARAMETERS + space + paths + " " + packageName + ".unitypackage";
                         }
                     }
                 }
