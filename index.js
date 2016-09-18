@@ -28,10 +28,18 @@ exports.importPackage = function (dest, directoriesToMove) {
             createDirectory(destination).then(() => {
                 importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT).then(
                     () => {
-                        moveFiles(directoriesToMove, destination);
-                    });
-            });
+                        moveFiles(directoriesToMove, destination).catch(error => {
+                            console.log(error);
+                        });;
+                    }).catch(error => {
+                        console.log(error);
+                    });;
+            }).catch(error => {
+                console.log(error);
+            });;
         }
+    }).catch(error => {
+        console.log(error);
     });
 };
 
@@ -57,6 +65,7 @@ function createDirectory(directory) {
 
 function deleteFiles(assetPath) {
     return new Promise((resolve, reject) => {
+        console.log('deleting files from ' + assetPath);
         rimraf(assetPath, {}, function (error) {
             if (error) {
                 reject(error);
