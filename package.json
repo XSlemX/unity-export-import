@@ -1,6 +1,6 @@
 {
   "name": "unity-export-import",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Package for exporting/importing unitypackage and setting them up in different folder",
   "main": "index.js",
   "repository": {
