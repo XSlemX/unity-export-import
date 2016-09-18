@@ -18,16 +18,16 @@ let unityPath = "\"E:\\Apps\\Unity 5\\Editor\\Unity.exe\""; //Need to make this 
 var src = path.join(__dirname, '.', 'Assets');
 //Since we are under node_modules we need to find the project asset folder
 const projectPath = path.join(__dirname, '..', '..', 'Assets');
-var destination = path.join(projectPath, prefix, jsonFile.name);
 
-exports.importPackage = function (folderName) {
-    pathExists(folderName).then((exists) => {
-        console.log(parentProject + " " + exists);
+exports.importPackage = function (dest) {
+    //First check i project exists
+    pathExists(projectPath).then(exists => {
         if (exists) {
-            createDirectory().then(() => {
-                importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + UNITY_PARAMETERS +  " \"" + path.join(__dirname, '..', '..') + "\" " + COMMAND_IMPORT).then(
+            var destination = path.join(projectPath, dest);
+            createDirectory(destination).then(() => {
+                importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + UNITY_PARAMETERS + " \"" + path.join(__dirname, '..', '..') + "\" " + COMMAND_IMPORT).then(
                     () => {
-                        copyAllFiles(jsonFile._directories);
+                        moveFiles(jsonFile._directories, destination);
                     });
             });
         }
@@ -35,9 +35,9 @@ exports.importPackage = function (folderName) {
 };
 
 exports.exportPackage = function (packageName, assetsPaths) {
-    exportPackage(packageName, assetsPaths).then( () => {
+    exportPackage(packageName, assetsPaths).then(() => {
         console.log('Assets exported ' + packageName);
-    }).catch( err => {
+    }).catch(err => {
         console.log(err);
     });
 }
@@ -66,7 +66,7 @@ function deleteFiles(assetPath) {
     });
 }
 
-function copyAllFiles(assetPaths, dest) {
+function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
             return copyFiles(assetPath, dest).then(() => {
