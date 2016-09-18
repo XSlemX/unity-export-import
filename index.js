@@ -20,15 +20,15 @@ const projectRoot = path.join(__dirname, '..', '..');
 //Since we are under node_modules we need to find the project asset folder
 const projectPath = path.join(projectRoot, 'Assets');
 
-exports.importPackage = function (dest) {
+exports.importPackage = function (dest, directoriesToMove) {
     //First check i project exists
     pathExists(projectPath).then(exists => {
         if (exists) {
             var destination = path.join(projectPath, dest);
             createDirectory(destination).then(() => {
-                importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + UNITY_PARAMETERS + " \"" + path.join(__dirname, '..', '..') + "\" " + COMMAND_IMPORT).then(
+                importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT).then(
                     () => {
-                        moveFiles(jsonFile._directories, destination);
+                        moveFiles(directoriesToMove, destination);
                     });
             });
         }
