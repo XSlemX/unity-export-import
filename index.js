@@ -70,6 +70,7 @@ function deleteFiles(assetPath) {
 function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
+            console.log('Copying files from ' + assetPath + ' to ' + dest);
             return copyFiles(assetPath, dest).then(() => {
                 return deleteFiles(assetPath);
             });
