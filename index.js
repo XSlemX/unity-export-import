@@ -130,7 +130,7 @@ function exportPackage(packageName, assetFileList) {
                                 return paths += "\"" + file + "\" ";
                             });
 
-                            return unityPath + COMMAND_EXPORT + space + UNITY_PARAMETERS + space + paths + " " + packageName + ".unitypackage";
+                            return unityPath + space + COMMAND_PATH + projectPath + space + UNITY_PARAMETERS + COMMAND_EXPORT + space + paths + " " + packageName + ".unitypackage";
                         }
                     }
                 }
