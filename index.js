@@ -16,8 +16,9 @@ const space = " ";
 let unityPath = "\"E:\\Apps\\Unity 5\\Editor\\Unity.exe\""; //Need to make this editable
 
 var src = path.join(__dirname, '.', 'Assets');
+const projectRoot = path.join(__dirname, '..', '..');
 //Since we are under node_modules we need to find the project asset folder
-const projectPath = path.join(__dirname, '..', '..', 'Assets');
+const projectPath = path.join(projectRoot, 'Assets');
 
 exports.importPackage = function (dest) {
     //First check i project exists
@@ -130,7 +131,7 @@ function exportPackage(packageName, assetFileList) {
                                 return paths += "\"" + file + "\" ";
                             });
 
-                            return unityPath + space + COMMAND_PATH + projectPath + space + UNITY_PARAMETERS + COMMAND_EXPORT + space + paths + " " + packageName + ".unitypackage";
+                            return unityPath + space + COMMAND_PATH + projectRoot + space + UNITY_PARAMETERS + COMMAND_EXPORT + space + paths + " " + packageName + ".unitypackage";
                         }
                     }
                 }
