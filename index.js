@@ -20,28 +20,65 @@ const projectRoot = path.join(__dirname, '..', '..');
 //Since we are under node_modules we need to find the project asset folder
 const projectPath = path.join(projectRoot, 'Assets');
 
-exports.importPackage = function (dest, directoriesToMove) {
-    //First check i project exists
-    pathExists(projectPath).then(exists => {
-        if (exists) {
-            var destination = path.join(projectPath, dest);
-            createDirectory(destination).then(() => {
-                importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT).then(
-                    () => {
-                        //Wait for files to be written to disk
-                        moveFiles(directoriesToMove, destination).catch(error => {
-                            console.log(error);
-                        });
-                    }).catch(error => {
-                        console.log(error);
-                    });;
-            }).catch(error => {
-                console.log(error);
-            });;
+/**
+ * options {unityPath, projectPath, destination, moveThese}
+ */
+exports.importPackage = function (options) {
+    return new Promise((resolve, reject) => {
+        if (options.unityPath) {
+            unityPath = options.unityPath;
         }
-    }).catch(error => {
-        console.log(error);
-    });
+
+        pathExists(unityPath).then(hasUnity => {
+            if (!hasUnity) {
+                reject('Cannot find any unity on path ' + unityPath);
+                return;
+            }
+
+            if (options.projectPath) {
+                projectPath = options.projectPath;
+            }
+
+            pathExists(projectPath).then(projectExists => {
+                if (!projectExists) {
+                    reject('Cannot find project path ' + projectPath);
+                    return;
+                }
+
+                importPackage('*.unitypackage',
+                    unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT
+                ).then(() => {
+                    if (!options.destination) {
+                        resolve('Finished without moving files');
+                        return;
+                    } else {
+                        if (!options.moveThese) {
+                            reject('If you want to move files to a certain destination you need to specify the files to be moved');
+                            return;
+                        }
+                    }
+
+                    var destination = path.join(projectPath, options.destination);
+                    return createDirectory(destination).then(() => {
+                        moveFiles(options.moveThese, destination)
+                            .then(() => { resolve('finished moving files') })
+                            .catch(error => {
+                                reject(error);
+                            });
+                    }).catch(error => {
+                        reject(error);
+                    });;
+                }).catch(error => {
+                    reject(error);
+                });;
+            }).catch(error => {
+                reject(error);
+            });
+        }).catch(error => {
+            reject(error);
+        });
+        resolve('Finished');
+    })
 };
 
 exports.exportPackage = function (packageName, assetsPaths) {
@@ -77,7 +114,7 @@ function deleteFiles(assetPath) {
                             resolve();
                         }
                     });
-                }else {
+                } else {
                     reject('Could not find path ' + assetPath);
                 }
             });
@@ -86,6 +123,7 @@ function deleteFiles(assetPath) {
 }
 
 function moveFiles(assetPaths, dest) {
+    //TODO: Pad Assets()
     return Promise.all(
         assetPaths.map(function (assetPath) {
             console.log('Moving files :' + assetPath);
