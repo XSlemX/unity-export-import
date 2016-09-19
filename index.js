@@ -29,10 +29,9 @@ exports.importPackage = function (dest, directoriesToMove) {
                 importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT).then(
                     () => {
                         //Wait for files to be written to disk
-                        setTimeout(
-                            moveFiles(directoriesToMove, destination).catch(error => {
-                                console.log(error);
-                            }), 1000);
+                        moveFiles(directoriesToMove, destination).catch(error => {
+                            console.log(error);
+                        });
                     }).catch(error => {
                         console.log(error);
                     });;
@@ -68,13 +67,17 @@ function createDirectory(directory) {
 function deleteFiles(assetPath) {
     return new Promise((resolve, reject) => {
         console.log('deleting files from ' + assetPath);
-        rimraf(assetPath, {}, function (error) {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-        })
+        setTimeout(() => {
+            pathExists(assetPath).then(exists => {
+                rimraf(assetPath, {}, function (error) {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        }, 1000);
     });
 }
 
@@ -87,28 +90,29 @@ function moveFiles(assetPaths, dest) {
             //TODO: Use pathExists or timeout?
             createDirectory(destination).then(() => {
                 console.log('Copying files from ' + origin + ' to ' + destination);
-                setTimeout(
                 return copyFiles(origin, destination).then(() => {
                     return deleteFiles(origin);
-                })
-                , 1000);
+                });
             });
         }));
 }
 
 function copyFiles(source, dest) {
     return new Promise((resolve, reject) => {
-        pathExists(source).then(exists => {
-            if (exists) {
-                ncp(source, dir, function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-            }
-        }).catch(() => reject('no such path: ' + source));
+        console.log('Copying files from ' + source + ' to ' + dest);
+        setTimeout(() => {
+            pathExists(source).then(exists => {
+                if (exists) {
+                    ncp(source, dir, function (err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                }
+            }).catch(() => reject('no such path: ' + source));
+        }, 1000);
     })
 }
 
