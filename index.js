@@ -113,7 +113,7 @@ function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
             //TODO: Make const
-            if(!assetPath.startWith('Assets/')) {
+            if(!assetPath.startsWith('Assets/')) {
                 assetPath = 'Assets/'.concat(assetPath);
             }
             console.log('Moving files :' + assetPath);
