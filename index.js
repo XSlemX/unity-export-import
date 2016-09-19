@@ -18,67 +18,54 @@ let unityPath = "\"E:\\Apps\\Unity 5\\Editor\\Unity.exe\""; //Need to make this 
 var src = path.join(__dirname, '.', 'Assets');
 const projectRoot = path.join(__dirname, '..', '..');
 //Since we are under node_modules we need to find the project asset folder
-const projectPath = path.join(projectRoot, 'Assets');
+let projectPath = path.join(projectRoot, 'Assets');
 
 /**
  * options {unityPath, projectPath, destination, moveThese}
  */
 exports.importPackage = function (options) {
-    return new Promise((resolve, reject) => {
-        if (options.unityPath) {
-            unityPath = options.unityPath;
+    if (options.unityPath) {
+        unityPath = options.unityPath;
+    }
+    if (options.projectPath) {
+        projectPath = options.projectPath;
+    }
+
+    pathExists(projectPath).then(projectExists => {
+        if (!projectExists) {
+            console.error('Cannot find project path ' + projectPath);
+            return;
         }
 
-        pathExists(unityPath).then(hasUnity => {
-            if (!hasUnity) {
-                reject('Cannot find any unity on path ' + unityPath);
+        importPackage('*.unitypackage',
+            unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT
+        ).then(() => {
+            if (!options.destination) {
+                resolve('Finished without moving files');
                 return;
-            }
-
-            if (options.projectPath) {
-                projectPath = options.projectPath;
-            }
-
-            pathExists(projectPath).then(projectExists => {
-                if (!projectExists) {
-                    reject('Cannot find project path ' + projectPath);
+            } else {
+                if (!options.moveThese) {
+                    reject('If you want to move files to a certain destination you need to specify the files to be moved');
                     return;
                 }
+            }
 
-                importPackage('*.unitypackage',
-                    unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT
-                ).then(() => {
-                    if (!options.destination) {
-                        resolve('Finished without moving files');
-                        return;
-                    } else {
-                        if (!options.moveThese) {
-                            reject('If you want to move files to a certain destination you need to specify the files to be moved');
-                            return;
-                        }
-                    }
-
-                    var destination = path.join(projectPath, options.destination);
-                    return createDirectory(destination).then(() => {
-                        moveFiles(options.moveThese, destination)
-                            .then(() => { resolve('finished moving files') })
-                            .catch(error => {
-                                reject(error);
-                            });
-                    }).catch(error => {
-                        reject(error);
-                    });;
-                }).catch(error => {
-                    reject(error);
-                });;
+            var destination = path.join(projectPath, options.destination);
+            return createDirectory(destination).then(() => {
+                moveFiles(options.moveThese, destination)
+                    .then(() => { resolve('finished moving files') })
+                    .catch(error => {
+                        console.error(error);
+                    });
             }).catch(error => {
-                reject(error);
-            });
+                console.error(erro);
+            });;
         }).catch(error => {
-            reject(error);
-        });
-        resolve('Finished');
-    })
+            console.error(error);
+        });;
+    }).catch(error => {
+        console.error(error);
+    });
 };
 
 exports.exportPackage = function (packageName, assetsPaths) {
