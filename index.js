@@ -28,9 +28,11 @@ exports.importPackage = function (dest, directoriesToMove) {
             createDirectory(destination).then(() => {
                 importPackage('*.unitypackage', unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT).then(
                     () => {
-                        moveFiles(directoriesToMove, destination).catch(error => {
-                            console.log(error);
-                        });;
+                        //Wait for files to be written to disk
+                        setTimeout(
+                            moveFiles(directoriesToMove, destination).catch(error => {
+                                console.log(error);
+                            }), 1000);
                     }).catch(error => {
                         console.log(error);
                     });;
@@ -79,14 +81,17 @@ function deleteFiles(assetPath) {
 function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
+            console.log('Moving files :' + assetPath);
             var origin = path.join(projectRoot, assetPath);
-            console.log(dest);
             var destination = path.join(dest, assetPath);
+            //TODO: Use pathExists or timeout?
             createDirectory(destination).then(() => {
                 console.log('Copying files from ' + origin + ' to ' + destination);
+                setTimeout(
                 return copyFiles(origin, destination).then(() => {
                     return deleteFiles(origin);
-                });
+                })
+                , 1000);
             });
         }));
 }
