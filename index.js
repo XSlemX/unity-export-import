@@ -58,7 +58,7 @@ exports.importPackage = function (options) {
                         console.error(error);
                     });
             }).catch(error => {
-                console.error(erro);
+                console.error(error);
             });;
         }).catch(error => {
             console.error(error);
@@ -112,10 +112,11 @@ function deleteFiles(assetPath) {
 function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
-            console.log('Moving files :' + assetPath);
+            //TODO: Make const
             if(!assetPath.startWith('Assets/')) {
                 assetPath = 'Assets/'.concat(assetPath);
             }
+            console.log('Moving files :' + assetPath);
             var origin = path.join(projectRoot, assetPath);
             var destination = path.join(dest, assetPath);
             createDirectory(destination).then(() => {
