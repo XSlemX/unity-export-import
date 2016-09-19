@@ -69,13 +69,17 @@ function deleteFiles(assetPath) {
         console.log('deleting files from ' + assetPath);
         setTimeout(() => {
             pathExists(assetPath).then(exists => {
-                rimraf(assetPath, {}, function (error) {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve();
-                    }
-                });
+                if (exists) {
+                    rimraf(assetPath, {}, function (error) {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
+                    });
+                }else {
+                    reject('Could not find path ' + assetPath);
+                }
             });
         }, 1000);
     });
@@ -103,13 +107,15 @@ function copyFiles(source, dest) {
         setTimeout(() => {
             pathExists(source).then(exists => {
                 if (exists) {
-                    ncp(source, dir, function (err) {
+                    ncp(source, dest, function (err) {
                         if (err) {
                             reject(err);
                         } else {
                             resolve();
                         }
                     });
+                } else {
+                    reject('Could not copy files from ' + source + ' to ' + dest);
                 }
             }).catch(() => reject('no such path: ' + source));
         }, 1000);
