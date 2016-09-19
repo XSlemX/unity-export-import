@@ -113,11 +113,12 @@ function moveFiles(assetPaths, dest) {
     return Promise.all(
         assetPaths.map(function (assetPath) {
             //TODO: Make const
-            if(!assetPath.startsWith('Assets/')) {
-                assetPath = 'Assets/'.concat(assetPath);
+            let pathDest = assetPath;
+            if(!pathDest.startsWith('Assets/')) {
+                pathDest = 'Assets/'.concat(pathDest);
             }
             console.log('Moving files :' + assetPath);
-            var origin = path.join(projectRoot, assetPath);
+            var origin = path.join(projectRoot, pathDest);
             var destination = path.join(dest, assetPath);
             createDirectory(destination).then(() => {
                 console.log('Copying files from ' + origin + ' to ' + destination);
