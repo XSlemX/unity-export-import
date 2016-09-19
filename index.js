@@ -41,11 +41,11 @@ exports.importPackage = function (options) {
             unityPath + space + COMMAND_PATH + space + " \"" + projectRoot + "\" " + UNITY_PARAMETERS + COMMAND_IMPORT
         ).then(() => {
             if (!options.destination) {
-                resolve('Finished without moving files');
+                console.log('Finished without moving files');
                 return;
             } else {
                 if (!options.moveThese) {
-                    reject('If you want to move files to a certain destination you need to specify the files to be moved');
+                    console.error('If you want to move files to a certain destination you need to specify the files to be moved');
                     return;
                 }
             }
@@ -53,7 +53,7 @@ exports.importPackage = function (options) {
             var destination = path.join(projectPath, options.destination);
             return createDirectory(destination).then(() => {
                 moveFiles(options.moveThese, destination)
-                    .then(() => { resolve('finished moving files') })
+                    .then(() => { console.log('finished moving files') })
                     .catch(error => {
                         console.error(error);
                     });
