@@ -110,13 +110,14 @@ function deleteFiles(assetPath) {
 }
 
 function moveFiles(assetPaths, dest) {
-    //TODO: Pad Assets()
     return Promise.all(
         assetPaths.map(function (assetPath) {
             console.log('Moving files :' + assetPath);
+            if(!assetPath.startWith('Assets/')) {
+                assetPath = 'Assets/'.concat(assetPath);
+            }
             var origin = path.join(projectRoot, assetPath);
             var destination = path.join(dest, assetPath);
-            //TODO: Use pathExists or timeout?
             createDirectory(destination).then(() => {
                 console.log('Copying files from ' + origin + ' to ' + destination);
                 return copyFiles(origin, destination).then(() => {
